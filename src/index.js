@@ -1,8 +1,9 @@
-class app {
+class App {
     constructor(){
         this.app = this.getElement('root')
     }
     getElement(id){
+        console.log(document.getElementById('root'));
         return document.getElementById(id)
     }
     createElement(tag, classes, id){
@@ -17,8 +18,11 @@ class app {
     }
     render(){
         const app = this.app
+        console.log(this.app);
+        console.log('1');
         this.createLogin(app)
         this.createMain(app)
+        console.log('yes');
     }
     createLogin(app){
         const loginDiv = this.createElement('div', ['login-div'])
@@ -26,21 +30,29 @@ class app {
         const logBtn = this.createElement('button', ['login-btn'])
         loginDiv.appendChild(logInput)
         loginDiv.appendChild(logBtn)
-        return app.appendChild(loginDiv)
+        app.appendChild(loginDiv)
+        return
     }
     createMain(app){
         const mainDiv = this.createElement('div', ['main'])
-        const mainInput = this.createElement('input', ['shortener-input'])
+        const mainUrlInput = this.createElement('input', ['shortener-input'])
+        const customUrlInput = this.createElement('input', ['shortener-input'])
         const shortBtn = this.createElement('button', ['shortener-btn'])
-        this.addShortnerBtnListener(shortBtn, mainInput)
-        mainDiv.appendChild(mainInput)
+        this.addShortnerBtnListener(shortBtn, mainUrlInput, customUrlInput)
+        mainDiv.appendChild(mainUrlInput)
+        mainDiv.appendChild(customUrlInput)
         mainDiv.appendChild(shortBtn)
-        return app.appendChild(mainDiv)
+        app.appendChild(mainDiv)
+        return
     }
-    addShortnerBtnListener(btn, input){
+    addShortnerBtnListener(btn, mainInput, customUrl){
         btn.addEventListener('click', () => {
             //send request with body input.value
+            //if custon.length === 0 custom.value = null
             //add header username
         })
+        return
     }
 }
+const app = new App()
+app.render()
