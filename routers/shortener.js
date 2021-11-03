@@ -5,34 +5,32 @@ const fs = require('fs')
 
 router.post('/', function(req, res, next){
     try {
+        let message = 'URL generated!'
         const username = req.headers.username
         let {originUrl, customUrl} = req.body
         if (!customUrl) customUrl = randomUrl()
+        if (testShortUrl(customUrl)) {
+            customUrl = randomUrl()
+            message = "sorry, the custom URL you wanted is taken... here's your randomly generated URL"
+        }
+        let urlObj = createUrlObj(originUrl, customUrl)
         if (fs.existsSync(`./users`)) {
             if (fs.existsSync(`./users/${username}.json`)) { //if the user exists update his json file
                 if (testOriginUrlInUser(originUrl, username)){
-                    updateUserJson(originUrl, customUrl, username)
-                    res.send(JSON.stringify({message:'URL generated!', customUrl: customUrl}))
-                    return
-                }
-                if (testShortUrl(customUrl)) {
-                    customUrl = randomUrl()
-                    updateUserJson(originUrl, customUrl, username)
-                    res.send(JSON.stringify({message:"sorry, the custom URL you wanted is taken... here's your generated URL", customUrl: customUrl}))
+                    appendUrlObjToUser(urlObj, username)
+                    res.send(JSON.stringify({message, customUrl: customUrl}))
                     return
                 } else {
-                    updateUserJson(originUrl, customUrl, username)
+                    appendUrlObjToUser(urlObj, username)
                 }
             } else { //if the user is new create a new json file
-                const fileContent = [{originUrl, customUrl}]
-                fs.writeFileSync(`./users/${username}.json`, JSON.stringify(fileContent))
+                fs.writeFileSync(`./users/${username}.json`, JSON.stringify([urlObj]))
             }
         } else {
             fs.mkdirSync(`./users`) // create users dir
-            const fileContent = [{originUrl, customUrl}]
-            fs.writeFileSync(`./users/${username}.json`, JSON.stringify(fileContent)) //create user json with the url
+            fs.writeFileSync(`./users/${username}.json`, JSON.stringify([urlObj])) //create user json with the url
         }
-        res.send(JSON.stringify({message:'URL generated!', customUrl: customUrl}))
+        res.send(JSON.stringify({message, customUrl: customUrl}))
     } catch (error) {
         console.log(error)
         next(error)
@@ -69,10 +67,8 @@ function testOriginUrlInUser(originUrl, username){
         const fileArr = JSON.parse(fs.readFileSync(`./users/${username}.json`))
         fileArr.forEach(urlObj => {
             if (urlObj.originUrl === originUrl) {
-                const fileContentBuffer = fs.readFileSync(`./users/${username}.json`)
-                const fileContent = JSON.parse(fileContentBuffer)
-                fileContent.splice(fileContent.indexOf(urlObj),1)
-                fs.writeFileSync(`./users/${username}.json`, JSON.stringify(fileContent))
+                fileArr.splice(fileArr.indexOf(urlObj),1)
+                fs.writeFileSync(`./users/${username}.json`, JSON.stringify(fileArr))
                 used = true
             }
         })
@@ -80,11 +76,19 @@ function testOriginUrlInUser(originUrl, username){
     if (used) return true
     return false
 }
-function updateUserJson(originUrl, customUrl, username){
+
+function appendUrlObjToUser(urlObj, username){
     const fileContentBuffer = fs.readFileSync(`./users/${username}.json`)
     const fileContent = JSON.parse(fileContentBuffer)
-    fileContent.push({originUrl, customUrl})
+    fileContent.push(urlObj)
     fs.writeFileSync(`./users/${username}.json`, JSON.stringify(fileContent))
 }
+
+function createUrlObj(originUrl, customUrl){
+    let creationDate = new Date()
+    let redirectCount = 0
+    return {originUrl, customUrl, creationDate, redirectCount}
+}
+
 
 module.exports = router

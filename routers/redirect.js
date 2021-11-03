@@ -13,10 +13,13 @@ router.get('/:customUrl', (req, res, next) => {
             fileContent.forEach(urlObj => {
                 if (urlObj.customUrl === customUrl) {
                     foundDestination = true
+                    redirectCount(fileContent, customUrl, username)
                     if (urlObj.originUrl.includes('https://')){
                         res.redirect(urlObj.originUrl)
+                        return
                     } else {
                         res.redirect(`https://${urlObj.originUrl}`)
+                        return
                     }
                 }
             })
@@ -29,5 +32,12 @@ router.get('/:customUrl', (req, res, next) => {
         next(error)
     }
 })
+
+function redirectCount(fileContent, customUrl, username){
+    const indexOfUrlObj = fileContent.map(uObj => uObj.customUrl).indexOf(customUrl)
+    fileContent[indexOfUrlObj].redirectCount++
+    fs.writeFileSync(`./users/${username}.json`, JSON.stringify(fileContent))
+}
+
 
 module.exports = router
