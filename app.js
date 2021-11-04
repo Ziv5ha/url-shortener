@@ -9,13 +9,13 @@ const userHandler = require('./middlewares/user-middleware')
 
 app.use(cors());
 
-app.use(userHandler)
 app.use('/r', redirect)
+app.use(userHandler)
 app.use('/shorten', shortenerRouter)
 app.use('/stats', statsRouter)
 app.use(errorHandler)
-// app.use("/public", express.static(`./public`));
-app.get("/", (req, res) => {
+app.use("/public", express.static(`./public/`));
+app.get("/public", (req, res) => {
   res.sendFile(__dirname + "/public/index.html");
 });
 

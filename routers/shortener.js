@@ -5,6 +5,7 @@ const fs = require('fs')
 
 router.post('/', function(req, res, next){
     try {
+        console.log("right place right time");
         let message = 'URL generated!'
         const username = req.headers.username
         let {originUrl, customUrl} = req.body

@@ -1,5 +1,5 @@
 function errorHandler(err, req, res, next) {
-    if (err.massage) {
+    if (err) {
         if (err == 404) {
             res.status(404).send('Page not found')
         }
