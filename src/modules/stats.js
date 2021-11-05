@@ -11,7 +11,9 @@ export function renderS(){
     generateStats(app, username)
 }
 async function generateStats(app, username){
+    createLoader()
     const stats = await getStats(username)
+    removeLoader()
     const statsElem = createElement('div', ['stats'])
     stats.forEach(urlObj => {
         const entry = createElement('div', ['stat-entry'])
@@ -37,4 +39,12 @@ async function getStats(username){
     } catch (error) {
         console.log(error);
     }
+}
+function createLoader() {
+    const loader = createElement('div', [], 'loader')
+    document.body.appendChild(loader)
+}
+function removeLoader() {
+    const loader = document.getElementById('loader')
+    loader.remove()
 }

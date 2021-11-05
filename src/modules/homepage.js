@@ -30,7 +30,8 @@ export function renderHP(){
 export function createLogin(app, user = 'Guest'){
     const loginDiv = createElement('div', ['login-div'])
     const logInput = createElement('input', ['login-input'])
-    const logBtn = createElement('button', ['login-btn'])
+    logInput.placeholder = 'Enter Username'
+    const logBtn = createElement('button', ['login-btn'], '', 'Log In')
 
     const welcome = createElement('p', ['user'], '', 'welcome ')
     const username = createElement('span', ['user'], 'username', user)
@@ -66,8 +67,10 @@ export function createNavHead(app){
 function createMain(app){
     const mainDiv = createElement('div', ['main'])
     const mainUrlInput = createElement('input', ['shortener-input'])
-    const customUrlInput = createElement('input', ['shortener-input'])
-    const shortBtn = createElement('button', ['custom-url-btn'])
+    mainUrlInput.placeholder = 'Enter Url'
+    const customUrlInput = createElement('input', ['custom-url-input'])
+    customUrlInput.placeholder = 'Want a custom Url? Enter it here'
+    const shortBtn = createElement('button', ['custom-url-btn'], '', 'do some magic')
     addShortnerBtnAtttibutes(shortBtn, mainUrlInput, customUrlInput)
     const output = createElement('p', [], 'output', 'custom generated link will be shown here. example: http://localhoest:3000/r/')
     const customLink = createElement('span', [], 'output-link', 'XXXXXXXXXX')

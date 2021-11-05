@@ -1,0 +1,95 @@
+body{
+    color: blanchedalmond;
+    background-color: rgb(70, 70, 70);
+}
+.page-head{
+    text-align: center;
+    font-size: 70px;
+    margin: auto;
+}
+
+.nav-summoner{
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 20px;
+    left: 15px;
+    height: 35px;
+    width: 35px;
+    background-color: rgb(40, 40, 40);
+    border-color: rgb(20, 20, 20);
+    border-width: 1px;
+    border-radius: 6px;
+    padding: 2px;
+}
+.ham-menu{
+    margin: auto;
+    height: 4px;
+    width: 22px;
+    border-radius: 2px;
+    background-color: rgb(110, 110, 110);
+
+}
+
+input{
+    border-radius: 5px;
+    background-color: rgb(151, 151, 151);
+}
+
+.login-div{
+    position: absolute;
+    justify-content: space-between;
+    height: 120px;
+    width: 250px;    
+    top: 20px;
+    right: 25px;
+}
+.login-input{
+    height: 20px;
+    width: 150px;
+    margin: 5px;
+}
+.login-btn{
+    height: 23px;
+    width: 60px;
+    background-color: rgb(92, 92, 92);
+    border-radius: 4px;
+    margin: 5px 0 0 5px;
+}
+.user{
+    margin: 10px 0 0 10px;
+    font-size: 18px;
+}
+#username{
+    background-color: rgb(77, 77, 77);
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.main{
+    display: block;
+    margin: auto;
+    width: 600px;
+    align-content: center;
+    text-align: center;
+}
+.shortener-input{
+    height: 40px;
+    width: 550px;
+    margin: 5px 0 0 0;
+}
+.custom-url-input{
+    height: 40px;
+    width: 150px;
+    margin: 17px 205px 0 -45px;
+}
+.custom-url-btn{
+    height: 40px;
+    width: 150px;
+    background-color: rgb(92, 92, 92);
+    border-radius: 4px;
+}
+
+#output{
+    font-size: 25px;
+}
