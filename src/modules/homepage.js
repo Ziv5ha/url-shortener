@@ -1,6 +1,7 @@
 import axios from "axios"
+import { renderS } from "./stats"
 
-function createElement(tag, classes, id, text){
+export function createElement(tag, classes, id, text){
     const elem = document.createElement(tag)
     if (classes.length > 0) {
         classes.forEach(className => {
@@ -11,47 +12,53 @@ function createElement(tag, classes, id, text){
     if (text) elem.textContent = text
     return elem
 }
-function addChilds(parentElemnt, children){
+export function addChilds(parentElemnt, children){
     children.forEach(childElemnt => {
         parentElemnt.appendChild(childElemnt)
     })
 }
 
 export function renderHP(){
+    clearRender()
     const app = document.getElementById("root")
-    console.log(app);
+    app.className = 'home'
     createNavHead(app)
     createLogin(app)
     createMain(app)
 }
 
-function createLogin(app){
+export function createLogin(app, user = 'Guest'){
     const loginDiv = createElement('div', ['login-div'])
     const logInput = createElement('input', ['login-input'])
     const logBtn = createElement('button', ['login-btn'])
 
     const welcome = createElement('p', ['user'], '', 'welcome ')
-    const username = createElement('span', ['user'], 'username', 'Guest')
+    const username = createElement('span', ['user'], 'username', user)
     setUser(logBtn, logInput, username)
 
     welcome.appendChild(username)
     addChilds(loginDiv, [logInput, logBtn, welcome])
     app.appendChild(loginDiv)
 }
-function setUser(logBtn, logInput, usernameSpan){
+const setUser = (logBtn, logInput, usernameSpan) => {
     logBtn.addEventListener('click', () => {
         usernameSpan.textContent = logInput.value
+        const app = document.getElementById("root")
+        if (app.classList.contains('stats')){
+            renderS()
+        }
     })
 }
 const getUser = () => {
     return document.getElementById('username').textContent
 }
-function createNavHead(app){
+export function createNavHead(app){
     const header = createElement('h1', ['page-head'], '', 'Zip-Url')
     const topHam = createElement('div', ['ham-menu'])
     const middleHam = createElement('div', ['ham-menu'])
     const bottomHam = createElement('div', ['ham-menu'])
     const summener = createElement('button', ['nav-summoner'])
+    summener.addEventListener('click', createMenuElem)
     addChilds(summener, [topHam, middleHam, bottomHam])
     addChilds(app, [header, summener])
 }
@@ -62,9 +69,10 @@ function createMain(app){
     const customUrlInput = createElement('input', ['shortener-input'])
     const shortBtn = createElement('button', ['custom-url-btn'])
     addShortnerBtnAtttibutes(shortBtn, mainUrlInput, customUrlInput)
-    mainDiv.appendChild(mainUrlInput)
-    mainDiv.appendChild(customUrlInput)
-    mainDiv.appendChild(shortBtn)
+    const output = createElement('p', [], 'output', 'custom generated link will be shown here. example: http://localhoest:3000/r/')
+    const customLink = createElement('span', [], 'output-link', 'XXXXXXXXXX')
+    output.appendChild(customLink)
+    addChilds(mainDiv, [mainUrlInput, customUrlInput, shortBtn, output])
     app.appendChild(mainDiv)
 }
 function addShortnerBtnAtttibutes(shortBtn, mainUrlInput, customUrlInput){
@@ -73,9 +81,9 @@ function addShortnerBtnAtttibutes(shortBtn, mainUrlInput, customUrlInput){
     })
 }
 
-const sendShortening = (mainUrlInput, customUrlInput) => {
+const sendShortening = async (mainUrlInput, customUrlInput) => {
     try {
-        axios.post(
+        const response = await axios.post(
             `http://localhost:3000/shorten/`, 
             {originUrl: `${mainUrlInput}`, customUrl: `${customUrlInput}`},
             {headers:{
@@ -83,14 +91,69 @@ const sendShortening = (mainUrlInput, customUrlInput) => {
                 'Content-Type': 'application/json'
             }}
         )
+        const output = document.getElementById('output')
+        output.textContent = `${response.data.message} your new custom link is\nhttp://localhost/r/`
+        const customLink = createElement('span', [], 'output-link', `${response.data.customUrl}`)
+        output.appendChild(customLink)
     } catch (error) {
         
     }
 }
 
-function clearRender(){
+export function clearRender(){
     const app = document.getElementById("root")
     while (app.hasChildNodes()){
         app.firstChild.remove()
+    }
+}
+
+
+function nav({target}){
+    const app =document.getElementById('root')
+    if (!app.classList.contains(target.id)){
+        if (target.id === 'home'){
+            clearActive()
+            target.classList.add('active')
+            renderHP()
+        } else if (target.id === 'stats'){
+            clearActive()
+            target.classList.add('active')
+            renderS()
+        }
+    }
+}
+function clearActive() {
+    const prevActive = document.getElementsByClassName('active')
+    for (const elem of prevActive) {
+        elem.classList.remove('active')
+    }
+}
+
+function createMenuElem() {
+    const menuElem = createElement('div', ['menu'])
+    const homeBtn = createElement('button', ['in-menu-botton'], 'home', 'Home')
+    homeBtn.addEventListener('click', nav)
+    const statsBtn = createElement('button', ['in-menu-botton'], 'stats', 'Stats')
+    statsBtn.addEventListener('click', nav)
+    addChilds(menuElem, [homeBtn, statsBtn])
+    document.body.appendChild(menuElem)
+    document.body.addEventListener('click', exitMenu)
+}
+function exitMenu({ target }) {
+    if (
+        target.classList.contains('menu') ||
+        target.parentElement.classList.contains('menu') ||
+        target.classList.contains('nav-summoner') ||
+        target.parentElement.classList.contains('nav-summoner')
+    ) {
+        return
+    }
+    deleteMenu()
+    document.body.removeEventListener('click', exitMenu)
+}
+function deleteMenu() {
+    const prevMenus = document.querySelectorAll('.menu')
+    for (const prevMenu of prevMenus) {
+        prevMenu.parentElement.removeChild(prevMenu)
     }
 }
