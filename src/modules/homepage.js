@@ -99,7 +99,7 @@ const sendShortening = async (mainUrlInput, customUrlInput) => {
     try {
         if (mainUrlInput){
             const response = await axios.post(
-                `http://localhost:3000/shorten/`, 
+                `https://zip-url.herokuapp.com/shorten/`, 
                 {originUrl: `${mainUrlInput}`, customUrl: `${customUrlInput}`},
                 {headers:{
                     username: getUser(),
@@ -107,7 +107,7 @@ const sendShortening = async (mainUrlInput, customUrlInput) => {
                 }}
             )
             const output = document.getElementById('output')
-            output.textContent = `${response.data.message} your new custom link is\nhttp://localhost/r/`
+            output.textContent = `${response.data.message} your new custom link is\nhttps://zip-url.herokuapp.com/r/`
             const customLink = createElement('span', [], 'output-link', `${response.data.customUrl}`)
             output.appendChild(customLink)
         }

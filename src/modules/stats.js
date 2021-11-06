@@ -18,7 +18,7 @@ async function generateStats(app, username){
     stats.forEach(urlObj => {
         const entry = createElement('div', ['stat-entry'])
         const originUrl = createElement('div', [], '', `Original URL: ${urlObj.originUrl}`)
-        const customUrl = createElement('div', [], '', `Custom URL: http://localhost:300/r/${urlObj.customUrl}`)
+        const customUrl = createElement('div', [], '', `Custom URL: https://zip-url.herokuapp.com/r/${urlObj.customUrl}`)
         const redirectCount = createElement('div', [], '', `used ${urlObj.redirectCount} times`)
         const creationDate = createElement('div', [], '', `Created on: ${urlObj.creationDate}`)
         addChilds(entry, [originUrl, customUrl, redirectCount, creationDate])
@@ -30,7 +30,7 @@ async function generateStats(app, username){
 async function getStats(username){
     try {
         const stats = await axios.get(
-            `http://localhost:3000/stats/`, 
+            `https://zip-url.herokuapp.com/stats/`, 
             {headers:{
                 username,
             }}
