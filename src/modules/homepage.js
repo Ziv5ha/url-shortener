@@ -83,7 +83,7 @@ function createMain(app){
     const shortBtn = createElement('button', ['custom-url-btn'], '', 'do some magic')
     addShortnerBtnAtttibutes(shortBtn, mainUrlInput, customUrlInput)
     addChilds(optionalDiv, [customUrlInput, shortBtn])
-    const output = createElement('p', [], 'output', 'custom generated link will be shown here. example: http://localhoest:3000/r/')
+    const output = createElement('p', [], 'output', 'custom generated link will be shown here. example: https://zip-url.herokuapp.com/r/')
     const customLink = createElement('span', [], 'output-link', 'XXXXXXXXXX')
     output.appendChild(customLink)
     addChilds(mainDiv, [mainUrlInput, optionalDiv, output])
