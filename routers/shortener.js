@@ -2,7 +2,10 @@ const express = require('express')
 const router = express.Router()
 router.use(express.json())
 const fs = require('fs')
+const userHandler = require('../middlewares/user-middleware')
 
+
+router.use(userHandler)
 router.post('/', function(req, res, next){
     try {
         console.log("right place right time");

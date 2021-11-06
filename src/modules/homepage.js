@@ -18,6 +18,15 @@ export function addChilds(parentElemnt, children){
     })
 }
 
+export function initRender() {
+    const app = document.getElementById("root")
+    app.className = 'home'
+    createNavHead(app)
+    createMenuElem()
+    createLogin(app)
+    createMain(app)
+}
+
 export function renderHP(){
     clearRender()
     const app = document.getElementById("root")
@@ -59,7 +68,7 @@ export function createNavHead(app){
     const middleHam = createElement('div', ['ham-menu'])
     const bottomHam = createElement('div', ['ham-menu'])
     const summener = createElement('button', ['nav-summoner'])
-    summener.addEventListener('click', createMenuElem)
+    summener.addEventListener('click', openNav)
     addChilds(summener, [topHam, middleHam, bottomHam])
     addChilds(app, [header, summener])
 }
@@ -68,14 +77,16 @@ function createMain(app){
     const mainDiv = createElement('div', ['main'])
     const mainUrlInput = createElement('input', ['shortener-input'])
     mainUrlInput.placeholder = 'Enter Url'
+    const optionalDiv = createElement('div', ['secend-row'])
     const customUrlInput = createElement('input', ['custom-url-input'])
     customUrlInput.placeholder = 'Want a custom Url? Enter it here'
     const shortBtn = createElement('button', ['custom-url-btn'], '', 'do some magic')
     addShortnerBtnAtttibutes(shortBtn, mainUrlInput, customUrlInput)
+    addChilds(optionalDiv, [customUrlInput, shortBtn])
     const output = createElement('p', [], 'output', 'custom generated link will be shown here. example: http://localhoest:3000/r/')
     const customLink = createElement('span', [], 'output-link', 'XXXXXXXXXX')
     output.appendChild(customLink)
-    addChilds(mainDiv, [mainUrlInput, customUrlInput, shortBtn, output])
+    addChilds(mainDiv, [mainUrlInput, optionalDiv, output])
     app.appendChild(mainDiv)
 }
 function addShortnerBtnAtttibutes(shortBtn, mainUrlInput, customUrlInput){
@@ -86,18 +97,20 @@ function addShortnerBtnAtttibutes(shortBtn, mainUrlInput, customUrlInput){
 
 const sendShortening = async (mainUrlInput, customUrlInput) => {
     try {
-        const response = await axios.post(
-            `http://localhost:3000/shorten/`, 
-            {originUrl: `${mainUrlInput}`, customUrl: `${customUrlInput}`},
-            {headers:{
-                username: getUser(),
-                'Content-Type': 'application/json'
-            }}
-        )
-        const output = document.getElementById('output')
-        output.textContent = `${response.data.message} your new custom link is\nhttp://localhost/r/`
-        const customLink = createElement('span', [], 'output-link', `${response.data.customUrl}`)
-        output.appendChild(customLink)
+        if (mainUrlInput){
+            const response = await axios.post(
+                `http://localhost:3000/shorten/`, 
+                {originUrl: `${mainUrlInput}`, customUrl: `${customUrlInput}`},
+                {headers:{
+                    username: getUser(),
+                    'Content-Type': 'application/json'
+                }}
+            )
+            const output = document.getElementById('output')
+            output.textContent = `${response.data.message} your new custom link is\nhttp://localhost/r/`
+            const customLink = createElement('span', [], 'output-link', `${response.data.customUrl}`)
+            output.appendChild(customLink)
+        }
     } catch (error) {
         
     }
@@ -133,14 +146,13 @@ function clearActive() {
 }
 
 function createMenuElem() {
-    const menuElem = createElement('div', ['menu'])
-    const homeBtn = createElement('button', ['in-menu-botton'], 'home', 'Home')
+    const menuElem = createElement('div', ['menu'], 'menu')
+    const homeBtn = createElement('button', ['in-menu-botton', 'active'], 'home', 'Home')
     homeBtn.addEventListener('click', nav)
     const statsBtn = createElement('button', ['in-menu-botton'], 'stats', 'Stats')
     statsBtn.addEventListener('click', nav)
     addChilds(menuElem, [homeBtn, statsBtn])
     document.body.appendChild(menuElem)
-    document.body.addEventListener('click', exitMenu)
 }
 function exitMenu({ target }) {
     if (
@@ -151,12 +163,21 @@ function exitMenu({ target }) {
     ) {
         return
     }
-    deleteMenu()
+    document.getElementById("menu").style.width = "0";
     document.body.removeEventListener('click', exitMenu)
 }
-function deleteMenu() {
-    const prevMenus = document.querySelectorAll('.menu')
-    for (const prevMenu of prevMenus) {
-        prevMenu.parentElement.removeChild(prevMenu)
-    }
+function openNav() {
+    document.getElementById("menu").style.width = "200px";
+    document.body.addEventListener('click', exitMenu)
 }
+
+// function deleteMenu() {
+//     const prevMenus = document.querySelectorAll('.menu')
+//     for (const prevMenu of prevMenus) {
+//         prevMenu.parentElement.removeChild(prevMenu)
+//     }
+// }
+  
+//   function closeNav() {
+//     document.getElementById("menu").style.width = "0";
+//   }

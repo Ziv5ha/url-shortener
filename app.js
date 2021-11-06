@@ -5,17 +5,16 @@ const shortenerRouter = require('./routers/shortener')
 const redirect = require('./routers/redirect')
 const statsRouter = require('./routers/stats')
 const errorHandler = require('./middlewares/error-handler')
-const userHandler = require('./middlewares/user-middleware')
+// const userHandler = require('./middlewares/user-middleware')
 
 app.use(cors());
 
 app.use('/r', redirect)
-app.use(userHandler)
 app.use('/shorten', shortenerRouter)
 app.use('/stats', statsRouter)
 app.use(errorHandler)
-app.use("/public", express.static(`./public/`));
-app.get("/public", (req, res) => {
+app.use("/", express.static(`./public/`));
+app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/index.html");
 });
 
